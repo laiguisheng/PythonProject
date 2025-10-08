@@ -1,0 +1,11 @@
+num1=4
+num2=5.5+3j
+print(num1)
+"""
+这是一堆注释
+没什么卵用
+纯练习
+"""
+num1=5
+print(num1)
+print(type(num2))
