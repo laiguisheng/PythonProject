@@ -1,0 +1,12 @@
+x=1#变量赋值定义一个x
+print(id(x))#打印变量x的标识
+print(x+5)#使用变量
+x=2#变量赋值定义一个变量x
+print(id(x))#此时x已经是一个新变量
+print(x+5)
+x='hello,python'#将变量赋值定义为一个文本字符串
+print(id(x))
+print(x)#函数id（）的功能是返回对象的“身份证号”
+a=(1,2,3)#定义一个元组
+x,y,z=a#把序列的值分别赋x,y,z
+print("x:%d,y:%d,z:%d"%(x,y,z))#打印结果
