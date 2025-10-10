@@ -20,6 +20,6 @@ if __name__=='__main__':
                 k=mid
                 break
     if k>=0:
-        print("m=%d,序号4=%d"%(m,k))
+        print("m=%d,序号=%d"%(m,k))
     else:#没找到k就不会被赋值，仍为一开始的负数
         print('没找到')
