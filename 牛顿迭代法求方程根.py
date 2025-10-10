@@ -1,4 +1,4 @@
-def solution(a,b,c,d):
+def solution牛顿法(a, b, c, d):
     x=1.5
     x0=x#用所求得的x值代替x0原来的值
     #f用来描述方程的值，fd用来描述方程求导之后的值
@@ -20,5 +20,5 @@ if __name__=='__main__':
     a, b, c, d=map(float,input().split())
     print('方程的参数为',a,b,c,d)
     #x用来记录求得的方程根
-    x=solution(a,b,c,d)
+    x=solution牛顿法(a, b, c, d)
     print('所求方程的根为x=%.6f'%x)
