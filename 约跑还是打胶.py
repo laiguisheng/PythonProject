@@ -36,3 +36,4 @@ if __name__=="__main__":
             print("今天约跑")
         else:
             print("今天打胶")
+        #break
