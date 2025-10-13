@@ -8,6 +8,21 @@ root.title("鼠标检测器")# 设置窗口标题。
 root.geometry("800x500")#设置窗口初始大小。
 root.resizable(True, True)#允许鼠标拉伸自定义窗口大小
 
+import os
+import sys
+
+def resource_path(relative_path):
+    """获取打包后资源的绝对路径"""
+    try:
+        # PyInstaller 创建临时目录并将路径存入 _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        # 开发环境直接使用当前目录
+        base_path = os.path.abspath("小程序")
+    return os.path.join(base_path, relative_path)
+image_path = resource_path("喜报.jpg")
+original_image = Image.open(image_path)
+
 def show_image_and_ask_quit():
     # -------------------------- 子步骤1：弹出图片窗口 --------------------------
     # 创建独立的图片窗口（Toplevel 是 tkinter 的子窗口类）
