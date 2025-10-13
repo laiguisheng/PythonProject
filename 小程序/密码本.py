@@ -20,7 +20,7 @@ pyperclip: 一个跨平台的库，用于访问剪贴板。这样我们就能实
 """
 
 # 数据文件路径
-DATA_FILE = "../../Documents/passwords.json"
+DATA_FILE = "../Documents/passwords.json"
 #DATA_FILE = "passwords.json": 定义一个常量来存储文件名。这样做的好处是，
 # 如果以后想改名（比如改成my_secrets.json），
 # 只需要修改这一处即可，不用在代码中到处寻找和替换。
