@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog, ttk
 from PIL import Image, ImageTk
-
+import pygame
 
 root = tk.Tk()#创建一个主窗口对象，它是所有其他 UI 元素的容器。
 root.title("鼠标检测器")# 设置窗口标题。
@@ -20,8 +20,8 @@ def resource_path(relative_path):
         # 开发环境直接使用当前目录
         base_path = os.path.abspath("小程序")
     return os.path.join(base_path, relative_path)
-image_path = resource_path("喜报.jpg")
-original_image = Image.open(image_path)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+image_path = os.path.join(script_dir, '喜报.jpg')
 
 def show_image_and_ask_quit():
     # -------------------------- 子步骤1：弹出图片窗口 --------------------------
@@ -33,6 +33,9 @@ def show_image_and_ask_quit():
     image_window.grab_set()
 
     try:
+        # 初始化 pygame 的混音器模块
+        image_path = resource_path('喜报.png')
+        pygame.mixer.init()  #初始化混音器
         # 1. 加载图片（替换为你的图片路径，支持 jpg/png 等格式）
         original_image = Image.open("喜报.png")
         # 2. 缩放图片以适应窗口（避免图片过大/过小）
@@ -46,8 +49,17 @@ def show_image_and_ask_quit():
         image_label.image = tk_image
         image_label.pack(padx=20, pady=20)  # 给图片添加边距
 
+        # --- 播放音乐的代码 ---
+        # 加载音乐文件
+        music_path = resource_path('bgm.mp3')
+        pygame.mixer.music.load("bgm.mp3")  # 4. 加载音乐
+        # 播放音乐 (-1 表示循环播放)
+        pygame.mixer.music.play(-1)  # 5. 播放音乐
+
         # 5. 图片窗口的“关闭按钮”逻辑（关闭图片后才触发退出询问）
         def on_image_window_close():
+            # 停止音乐播放
+            pygame.mixer.music.stop() #关闭窗口时停止音乐
             image_window.destroy()  # 关闭图片窗口
             # -------------------------- 子步骤2：询问是否退出 --------------------------
             # 弹出 yes/no 选项框（title=窗口标题，message=提示内容）
@@ -64,11 +76,15 @@ def show_image_and_ask_quit():
         image_window.protocol("WM_DELETE_WINDOW", on_image_window_close)
 
     # 处理图片加载失败的异常（如路径错误、文件损坏）
-    except FileNotFoundError:
-        messagebox.showerror("错误", "找不到图片文件！\n请检查图片路径是否正确。")
-        image_window.destroy()  # 关闭空的图片窗口
+    except FileNotFoundError as e:
+        # 改进错误提示，能区分是图片还是音乐文件找不到
+        if "喜报.jpg" in str(e) or "喜报.png" in str(e):
+            messagebox.showerror("错误", "找不到图片文件！\n请检查图片路径是否正确。")
+        else:
+            messagebox.showerror("错误", "找不到音乐文件！\n请检查音乐路径是否正确。")
+        image_window.destroy()
     except Exception as e:
-        messagebox.showerror("错误", f"图片加载失败：{str(e)}")
+        messagebox.showerror("错误", f"加载失败：{str(e)}")
         image_window.destroy()
 
 # 创建按钮
