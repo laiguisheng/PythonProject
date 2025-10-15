@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox,ttk
+from PIL import Image, ImageTk
 
 op=['#','+','-','*','/']
 
@@ -138,10 +139,32 @@ def clear_click():
     input_entry.delete(0, tk.END)  # 清空输入框
     result_text.delete(1.0, tk.END)  # 清空结果框
 
+def resize_background(event):
+    global bg_photo
+    resized = bg_image.resize((event.width, event.height), Image.LANCZOS)
+    bg_photo = ImageTk.PhotoImage(resized)
+    background_label.config(image=bg_photo)
+    background_label.image = bg_photo
+
 root = tk.Tk()
 root.title("24点暴力计算器")
 root.geometry("800x500")
 root.resizable(True, True)
+
+try:
+    bg_image = Image.open("2023.png")
+    bg_photo = ImageTk.PhotoImage(bg_image)
+    # 创建背景标签，放在最底层
+    background_label = tk.Label(root, image=bg_photo)
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+    # 绑定窗口大小变化事件
+    root.bind("<Configure>", resize_background)
+except Exception as e:
+    messagebox.showerror("错误", f"背景图加载失败: {str(e)}")
+    # 失败时使用纯色背景
+    background_label = tk.Label(root, bg="#f0f0f0")
+    background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
 paned_window = ttk.PanedWindow(root, orient=tk.HORIZONTAL)
 paned_window.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
 left_frame = ttk.LabelFrame(paned_window, text="输入十以内的四个整数", width=250, height=400)
@@ -161,8 +184,9 @@ calculate_btn.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
 clear_btn = ttk.Button(button_frame, text="清空",command=clear_click)
 clear_btn.pack(side=tk.RIGHT, padx=5, fill=tk.X, expand=True)
 # 在右侧视图添加结果显示区域
-result_text = tk.Text(right_frame, wrap=tk.WORD, width=50, height=20)
-result_text.pack(pady=10, padx=10, fill=tk.BOTH, expand=True)
+result_text = tk.Text(right_frame, wrap=tk.WORD, font=('SimHei', 10),
+                     bg='#f0f8ff',relief=tk.FLAT)  # 半透明白色背景
+result_text.pack(fill=tk.BOTH, expand=True, pady=5, padx=5)
 # 添加滚动条
 scrollbar = ttk.Scrollbar(result_text, command=result_text.yview)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
