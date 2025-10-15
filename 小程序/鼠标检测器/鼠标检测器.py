@@ -2,14 +2,13 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog, ttk
 from PIL import Image, ImageTk
 import pygame
+import os
+import sys
 
 root = tk.Tk()#创建一个主窗口对象，它是所有其他 UI 元素的容器。
 root.title("鼠标检测器")# 设置窗口标题。
 root.geometry("800x500")#设置窗口初始大小。
 root.resizable(True, True)#允许鼠标拉伸自定义窗口大小
-
-import os
-import sys
 
 def resource_path(relative_path):
     """获取打包后资源的绝对路径"""
@@ -17,11 +16,9 @@ def resource_path(relative_path):
         # PyInstaller 创建临时目录并将路径存入 _MEIPASS
         base_path = sys._MEIPASS
     except Exception:
-        # 开发环境直接使用当前目录
-        base_path = os.path.abspath("小程序")
+        # 开发环境直接使用当前脚本所在目录（修复原路径指向问题）
+        base_path = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base_path, relative_path)
-script_dir = os.path.dirname(os.path.abspath(__file__))
-image_path = os.path.join(script_dir, '喜报.jpg')
 
 def show_image_and_ask_quit():
     # -------------------------- 子步骤1：弹出图片窗口 --------------------------
@@ -37,7 +34,7 @@ def show_image_and_ask_quit():
         image_path = resource_path('喜报.png')
         pygame.mixer.init()  #初始化混音器
         # 1. 加载图片（替换为你的图片路径，支持 jpg/png 等格式）
-        original_image = Image.open("喜报.png")
+        original_image = Image.open(image_path)
         # 2. 缩放图片以适应窗口（避免图片过大/过小）
         resized_image = original_image.resize((900, 1200), Image.LANCZOS)  # 平滑缩放
         # 3. 转换为 tkinter 可识别的图片格式
@@ -52,7 +49,7 @@ def show_image_and_ask_quit():
         # --- 播放音乐的代码 ---
         # 加载音乐文件
         music_path = resource_path('bgm.mp3')
-        pygame.mixer.music.load("bgm.mp3")  # 4. 加载音乐
+        pygame.mixer.music.load(music_path)  # 4. 加载音乐
         # 播放音乐 (-1 表示循环播放)
         pygame.mixer.music.play(-1)  # 5. 播放音乐
 
@@ -77,10 +74,10 @@ def show_image_and_ask_quit():
 
     # 处理图片加载失败的异常（如路径错误、文件损坏）
     except FileNotFoundError as e:
-        # 改进错误提示，能区分是图片还是音乐文件找不到
-        if "喜报.jpg" in str(e) or "喜报.png" in str(e):
+        # 改进错误提示，精准区分图片和音乐文件
+        if "喜报.png" in str(e):
             messagebox.showerror("错误", "找不到图片文件！\n请检查图片路径是否正确。")
-        else:
+        elif "bgm.mp3" in str(e):
             messagebox.showerror("错误", "找不到音乐文件！\n请检查音乐路径是否正确。")
         image_window.destroy()
     except Exception as e:
@@ -91,7 +88,7 @@ def show_image_and_ask_quit():
 center_button = tk.Button(
     root,
     text="开始检测",
-    font=("Arial", 100,"bold"),
+    font=("Arial", 50,"bold"),  # 调整字体大小，避免界面溢出
     padx=20,
     pady=10,
     bg="#2196F3",  # 按钮背景色（蓝色）
